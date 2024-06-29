@@ -13,6 +13,7 @@ class _ApplicationMountProtocol(Protocol):
     path: str
     app: FastAPI
     name: str
+    version: str
 
 
 class _CustomAppState(State):
