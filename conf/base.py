@@ -13,18 +13,20 @@ with open("pyproject.toml", mode="rb") as stream:
 class BaseSettings:
     BASE_DIR = Path(__file__).parent.parent
 
-    ENVIRONMENT_PREFIX = "DOCS"
+    ENVIRONMENT_PREFIX = "DWA"
 
     APP_NAME: str = pyproject["name"]
     APP_DESCRIPTION: str = pyproject["description"]
     APP_VERSION: str = pyproject["version"]
 
-    DOCS_URL = "/docs"
+    DOCS_URL = "/swagger-docs"
     REDOC_URL = None
-    OPENAPI_URL = "/openapi.json"
+    OPENAPI_URL = "/swagger-docs/openapi.json"
 
+    SESSION_COOKIE_NAME = "sid"
     DB_NAME = "docs"
-    SESSION_COOKIE_NAME = "session_id"
+
+    TEMPLATES_DIR = BASE_DIR / "frontend" / "templates"
 
     # NOTE: These are here only for type checking purposes. They should be set in the
     # subclasses.
