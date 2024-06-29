@@ -1,7 +1,7 @@
 services:
-  mongo:
+  mongodb:
     image: mongo
-    container_name: docs-mongodb
+    container_name: dwa-mongodb
     env_file:
       - .env
     ports:
@@ -9,21 +9,21 @@ services:
     volumes:
       - ./volume-data:/data/db
     networks:
-      - docs-mongo-network
+      - dwa-mongo-network
 
   mongo-express:
     image: mongo-express
-    container_name: docs-mongo-express
+    container_name: dwa-mongo-express
     ports:
       - 8081:8081
     env_file:
       - .env
     depends_on:
-      - mongo
+      - mongodb
     networks:
-      - docs-mongo-network
+      - dwa-mongo-network
 
 networks:
-  docs-mongo-network:
+  dwa-mongo-network:
     driver: bridge
-    name: docs-mongo-network
+    name: dwa-mongo-network
