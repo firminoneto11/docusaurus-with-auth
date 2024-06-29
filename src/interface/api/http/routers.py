@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 
-from fastapi import APIRouter, Depends, FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, FastAPI, status
+from fastapi.responses import HTMLResponse, StreamingResponse
 
 from conf import settings
 
 from .controllers import DocsController, LoginController
-from .middleware import redirect_middleware
 
 
 @dataclass
@@ -15,35 +14,36 @@ class ApplicationMount:
     app: FastAPI
     name: str
 
+    def __post_init__(self):
+        self.version = self.path.replace("/", "")
 
-def get_routers():
+
+def get_mounts():
     app_v1 = FastAPI(**settings.get_asgi_settings())
 
-    app_v1.include_router(router)
+    app_v1.include_router(router, tags=["Core"])
 
     return [ApplicationMount(path="/v1", app=app_v1, name="v1")]
 
 
-router = APIRouter(tags=["Core"])
+router = APIRouter()
 
 
 router.add_api_route(
-    path="/documentation",
+    path="/docs",
     methods=["GET"],
-    response_class=HTMLResponse,
+    response_class=StreamingResponse,
     endpoint=DocsController.get,
-    status_code=200,
-    name="core:index",
-    summary="SPA index page",
-    dependencies=[Depends(redirect_middleware)],
+    status_code=status.HTTP_200_OK,
+    name="core:docs",
+    summary="SPA Documentation page",
 )
 router.add_api_route(
     path="/login",
     methods=["GET", "POST"],
     response_class=HTMLResponse,
     endpoint=LoginController.handle,
-    status_code=200,
+    status_code=status.HTTP_200_OK,
     name="core:login",
     summary="Login page",
-    dependencies=[Depends(redirect_middleware)],
 )
